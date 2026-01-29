@@ -127,7 +127,7 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
           </p>
         </div>
         <p className="center">
-          {!isValid && <span>Please enter valid value</span>}
+          {!isValid && <div className="center">Please enter valid value</div>}
         </p>
       </section>
     </>
