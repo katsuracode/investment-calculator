@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { calculateInvestmentResults } from "../util/investment";
-import type { InventimentData } from "../App";
+import type { InvestmentData } from "../App";
 
 type UserInputProps = {
-  onAnnualDataUpdate: (annualData: Array<InventimentData>) => void;
+  onAnnualDataUpdate: (annualData: Array<InvestmentData>) => void;
 };
 
 const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
@@ -11,6 +11,7 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
   const [annualInvestment, setAnnualInvestment] = useState("");
   const [expectedReturn, setExpectedReturn] = useState("");
   const [duration, setDuration] = useState("");
+  const [isValid, setIsValid] = useState(true);
 
   function updateAnnualData() {
     const initial = parseFloat(initialInvestment) || 0;
@@ -41,30 +42,28 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
     }
   }
 
-  function handleInputInitialInvestment(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
-    const initialInvestmentValue = event.target.value || "0";
-    setInitialInvestment(initialInvestmentValue);
-  }
+  function handleInputValue(event: React.ChangeEvent<HTMLInputElement>) {
+    const value = event.target.value;
 
-  function handleInputAnnualInvestment(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
-    const annualInvestmentValue = event.target.value || "0";
-    setAnnualInvestment(annualInvestmentValue);
-  }
-
-  function handleInputExpectedReturn(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
-    const expectedReturnValue = event.target.value;
-    setExpectedReturn(expectedReturnValue);
-  }
-
-  function handleInputDuration(event: React.ChangeEvent<HTMLInputElement>) {
-    const durationValue = event.target.value;
-    setDuration(durationValue);
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      switch (event.target.name) {
+        case "initial_investment":
+          setInitialInvestment(value);
+          break;
+        case "annual_investment":
+          setAnnualInvestment(value);
+          break;
+        case "expected_return":
+          setExpectedReturn(value);
+          break;
+        case "duration":
+          setDuration(value);
+          break;
+      }
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
   }
 
   return (
@@ -78,7 +77,7 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
               name="initial_investment"
               id="initial_investment"
               value={initialInvestment}
-              onChange={handleInputInitialInvestment}
+              onChange={handleInputValue}
               onBlur={updateAnnualData}
               onKeyDown={handleKeyDownAndUpdate}
               required
@@ -91,7 +90,7 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
               name="annual_investment"
               id="annual_investment"
               value={annualInvestment}
-              onChange={handleInputAnnualInvestment}
+              onChange={handleInputValue}
               onBlur={updateAnnualData}
               onKeyDown={handleKeyDownAndUpdate}
               required
@@ -107,7 +106,7 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
               name="expected_return"
               id="expected_return"
               value={expectedReturn}
-              onChange={handleInputExpectedReturn}
+              onChange={handleInputValue}
               onBlur={updateAnnualData}
               onKeyDown={handleKeyDownAndUpdate}
               required
@@ -120,13 +119,16 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
               name="duration"
               id="duration"
               value={duration}
-              onChange={handleInputDuration}
+              onChange={handleInputValue}
               onBlur={updateAnnualData}
               onKeyDown={handleKeyDownAndUpdate}
               required
             />
           </p>
         </div>
+        <p className="center">
+          {!isValid && <span>Please enter valid value</span>}
+        </p>
       </section>
     </>
   );

@@ -3,7 +3,7 @@ import Header from "./components/Header";
 import Result from "./components/Result";
 import UserInput from "./components/UserInput";
 
-export type InventimentData = {
+export type InvestmentData = {
   year: number;
   interest: number;
   valueEndOfYear: number;
@@ -19,10 +19,10 @@ export type ResultData = {
 };
 
 const App = () => {
-  const [annualData, setAnnualData] = useState<Array<InventimentData>>([]);
+  const [annualData, setAnnualData] = useState<Array<InvestmentData>>([]);
   const [resultData, setResultData] = useState<Array<ResultData>>([]);
 
-  function handleAnnualData(currentAnnualData: Array<InventimentData>) {
+  function handleAnnualData(currentAnnualData: Array<InvestmentData>) {
     setAnnualData(currentAnnualData);
 
     const convertData: Array<ResultData> = [];

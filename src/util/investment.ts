@@ -4,7 +4,7 @@
 // - annualInvestment: The amount invested every year
 // - expectedReturn: The expected (annual) rate of return
 
-import type { InventimentData } from "../App";
+import type { InventmentData } from "../App";
 
 // - duration: The investment duration (time frame)
 type calculateInvestmentResultsProps = {
@@ -19,7 +19,7 @@ export function calculateInvestmentResults({
   annualInvestment,
   expectedReturn,
   duration,
-}: calculateInvestmentResultsProps): Array<InventimentData> {
+}: calculateInvestmentResultsProps): Array<InventmentData> {
   const annualData = [];
   let investmentValue = initialInvestment;
 
