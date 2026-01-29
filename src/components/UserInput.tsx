@@ -7,57 +7,52 @@ type UserInputProps = {
 };
 
 const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
-  const [initialInvestment, setInitialInvestment] = useState(0);
-  const [annualInvestment, setAnnualInvestment] = useState(0);
+  const [initialInvestment, setInitialInvestment] = useState("");
+  const [annualInvestment, setAnnualInvestment] = useState("");
   const [expectedReturn, setExpectedReturn] = useState("");
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState("");
 
   function updateAnnualData() {
-    if (
-      initialInvestment &&
-      initialInvestment > 0 &&
-      annualInvestment &&
-      annualInvestment > 0 &&
-      expectedReturn &&
-      parseFloat(expectedReturn) > 0 &&
-      duration &&
-      duration > 0
-    ) {
-      const expectedReturnFloat = parseFloat(expectedReturn);
+    const initial = parseFloat(initialInvestment) || 0;
+    const annual = parseFloat(annualInvestment) || 0;
+    const expected = parseFloat(expectedReturn) || 0;
+    const dur = parseInt(duration) || 0;
 
+    // 期間だけは正の数である必要がある
+    if (dur > 0) {
       const annualData = calculateInvestmentResults({
-        initialInvestment,
-        annualInvestment,
-        expectedReturn: expectedReturnFloat,
-        duration,
+        initialInvestment: initial,
+        annualInvestment: annual,
+        expectedReturn: expected,
+        duration: dur,
       });
 
       onAnnualDataUpdate(annualData);
-      console.table(annualData);
     } else {
-      console.group();
-      console.log("initialInvestment = ", initialInvestment);
-      console.log("annualInvestment = ", annualInvestment);
-      console.log("expectedReturn = ", expectedReturn);
-      console.log("duration = ", duration);
-      console.groupEnd();
+      onAnnualDataUpdate([]);
+    }
+  }
+
+  function handleKeyDownAndUpdate(
+    event: React.KeyboardEvent<HTMLInputElement>,
+  ) {
+    if (event.key === "Enter") {
+      updateAnnualData();
     }
   }
 
   function handleInputInitialInvestment(
     event: React.ChangeEvent<HTMLInputElement>,
   ) {
-    const initialInvestmentValue = parseInt(event.target.value) || 0;
+    const initialInvestmentValue = event.target.value || "0";
     setInitialInvestment(initialInvestmentValue);
-    updateAnnualData();
   }
 
   function handleInputAnnualInvestment(
     event: React.ChangeEvent<HTMLInputElement>,
   ) {
-    const annualInvestmentValue = parseInt(event.target.value) || 0;
+    const annualInvestmentValue = event.target.value || "0";
     setAnnualInvestment(annualInvestmentValue);
-    updateAnnualData();
   }
 
   function handleInputExpectedReturn(
@@ -65,43 +60,47 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
   ) {
     const expectedReturnValue = event.target.value;
     setExpectedReturn(expectedReturnValue);
-    updateAnnualData();
   }
 
   function handleInputDuration(event: React.ChangeEvent<HTMLInputElement>) {
-    const durationValue = parseInt(event.target.value);
+    const durationValue = event.target.value;
     setDuration(durationValue);
-    updateAnnualData();
   }
 
   return (
     <>
-      <div id="user-input">
+      <section id="user-input">
         <div className="input-group">
-          <div>
-            <label htmlFor="initial_investment">initial investiment</label>
+          <p>
+            <label htmlFor="initial_investment">initial investment</label>
             <input
               type="text"
               name="initial_investment"
               id="initial_investment"
               value={initialInvestment}
               onChange={handleInputInitialInvestment}
+              onBlur={updateAnnualData}
+              onKeyDown={handleKeyDownAndUpdate}
+              required
             />
-          </div>
-          <div>
-            <label htmlFor="annual_investment">annual investiment</label>
+          </p>
+          <p>
+            <label htmlFor="annual_investment">annual investment</label>
             <input
               type="text"
               name="annual_investment"
               id="annual_investment"
               value={annualInvestment}
               onChange={handleInputAnnualInvestment}
+              onBlur={updateAnnualData}
+              onKeyDown={handleKeyDownAndUpdate}
+              required
             />
-          </div>
+          </p>
         </div>
 
         <div className="input-group">
-          <div>
+          <p>
             <label htmlFor="expected_return">expected return</label>
             <input
               type="text"
@@ -109,10 +108,12 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
               id="expected_return"
               value={expectedReturn}
               onChange={handleInputExpectedReturn}
+              onBlur={updateAnnualData}
+              onKeyDown={handleKeyDownAndUpdate}
+              required
             />
-          </div>
-
-          <div>
+          </p>
+          <p>
             <label htmlFor="duration">duration</label>
             <input
               type="number"
@@ -120,10 +121,13 @@ const UserInput = ({ onAnnualDataUpdate }: UserInputProps) => {
               id="duration"
               value={duration}
               onChange={handleInputDuration}
+              onBlur={updateAnnualData}
+              onKeyDown={handleKeyDownAndUpdate}
+              required
             />
-          </div>
+          </p>
         </div>
-      </div>
+      </section>
     </>
   );
 };

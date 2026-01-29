@@ -26,20 +26,27 @@ const App = () => {
     setAnnualData(currentAnnualData);
 
     const convertData: Array<ResultData> = [];
+    let totalInterestAccumulated = 0;
+    let totalInvestedCapital = 0;
+
     currentAnnualData.forEach((annualData, index) => {
       const investmentValue = annualData.valueEndOfYear;
       const interestOfYear = annualData.interest;
 
-      const totalInterest =
-        interestOfYear + (index === 0 ? 0 : currentAnnualData[index].interest);
+      totalInterestAccumulated += interestOfYear;
 
-      const investedCapital = investmentValue - totalInterest;
+      if (index === 0) {
+        totalInvestedCapital = investmentValue - interestOfYear;
+      } else {
+        totalInvestedCapital += annualData.annualInvestment;
+      }
+
       convertData.push({
         year: annualData.year,
         investmentValue,
         interestOfYear,
-        totalInterest,
-        investedCapital,
+        totalInterest: totalInterestAccumulated,
+        investedCapital: totalInvestedCapital,
       });
     });
 
